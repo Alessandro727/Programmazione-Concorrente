@@ -5,19 +5,20 @@
 #### La fork crea quindi un flusso figlio rispetto al corrente, mentre la join blocca tutti i processi attivi e li fa attendere affinché l'id del flusso di esecuzione passato alla join non termina. Ciascun flusso è dotato di proprie aree di memoria, mentre il codice può essere condiviso.
 ### Esempio di traduzione di un diagramma delle precedenze con fork e join:
 <center>![title](img/Example_1.png)</center><br>
-<code><br>concurrent procedure P1<br>
-begin 'corpo di P1'; end <br>
-concurrent procedure P2 <br>
-begin 'corpo di P2'; end <br>
-... <br>
-begin <br>
-&nbsp; var p2_id, p3_id : f.d.e_id; <br>
-&nbsp; P1(); <br>
-&nbsp; p2_id = fork P2; p3_id = fork P3;<br>
-&nbsp; join p2_id; join p3_id;<br>
-&nbsp; P4();<br>
-end<br>
-</code>
+```
+concurrent procedure P1
+begin 'corpo di P1'; end 
+concurrent procedure P2
+begin 'corpo di P2'; end
+...
+begin
+	var p2_id, p3_id : f.d.e_id;
+	P1();
+	p2_id = fork P2; p3_id = fork P3;
+	join p2_id; join p3_id;
+	P4();
+end
+```
 #### Vantaggi:
 * Flessibilità
 * Espressività

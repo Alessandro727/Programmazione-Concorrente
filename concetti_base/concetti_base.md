@@ -1,10 +1,10 @@
-# <center><b>Concetti Base</b></center>
+# <div style='text-align:center;'>Concetti Base</div>
 ## Fork e Join
 #### fde_id = fork: crea un flusso di esecuzione figlio di quello attuale e restituisce l'identificatore del f.d.e figlio appena creato. I flussi di esecuzione di padre e figlio continuano indipendenti tra di loro.
 #### join fde_id: il flusso di esecuzione corrente rimane bloccato fino a che non termina il flusso di esecuzione con l'identificatore specificato.
 #### La fork crea quindi un flusso figlio rispetto al corrente, mentre la join blocca tutti i processi attivi e li fa attendere affinché l'id del flusso di esecuzione passato alla join non termina. Ciascun flusso è dotato di proprie aree di memoria, mentre il codice può essere condiviso.
 ### Esempio di traduzione di un diagramma delle precedenze con fork e join:
-<center>![title](img/Example_1.png)</center><br>
+<div style='text-align:center;'>![title](img/Example_1.png)</div><br>
 ```
 concurrent procedure P1
 begin 'corpo di P1'; end 

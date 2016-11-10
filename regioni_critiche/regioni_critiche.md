@@ -63,10 +63,8 @@ begin loop
 end;
 ```
 #### Lo stallo viene evitato imponendo l'acquisizione contemporanea di due forchette, quando un filosofo scopre che almeno una delle due forchette è occupata abbandona la regione critica condizionale ed aspetta nella coda. La soluzione proposta non gode della proprietà di fairness.
+
+## I limiti delle regioni critiche
 #### Le regioni critiche hanno due principali limitazioni:
 * efficienza: per la necessità di rivalutare le condizioni all'uscita di ogni regione critica
 * coesione: le regioni critiche sulla stessa variabile condivisa possono essere sparse su tutto il programma.
-
-## I limiti delle regioni critiche
-
-## Oltre le regioni critiche

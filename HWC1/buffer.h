@@ -1,10 +1,9 @@
 #ifndef HWC1_BUFFER_H
 #define HWC1_BUFFER_H
+#define BUFFER_ERROR (msg_t*) NULL
 
 #include "msg.h"
 #include <pthread.h>
-
-#define BUFFER_ERROR (msg_t) NULL
 
 typedef struct buffer {
     msg_t* queue;

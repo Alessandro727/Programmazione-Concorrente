@@ -1,3 +1,11 @@
+//
+//  msg.c
+//  HWC1
+//
+//  Created by Marco Faretra on 23/11/16.
+//  Copyright © 2016 Marco Faretra. All rights reserved.
+//
+
 #include "msg.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,14 +18,13 @@ msg_t *msg_init(void *content) {
     new_msg -> msg_init = msg_init;
     new_msg -> msg_destroy = msg_destroy;
     new_msg -> msg_copy = msg_copy;
-
+    
     return new_msg;
 }
 
 /* dealloca un messaggio */
 
 void msg_destroy(msg_t* msg) {
-    free(msg->content);
     free(msg);
 }
 
@@ -26,3 +33,4 @@ void msg_destroy(msg_t* msg) {
 msg_t *msg_copy(msg_t* msg) {
     return msg_init(msg->content);
 }
+

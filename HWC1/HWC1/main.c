@@ -8,6 +8,8 @@ static buffer_t* buffer_unitario_vuoto = NULL;
 static buffer_t* buffer_unitario_pieno = NULL;
 static buffer_t* buffer_test = NULL;
 static buffer_t* buffer_vuoto = NULL;
+static buffer_t* buffer_pieno = NULL;
+static buffer_t* buffer_vuoto02 = NULL;
 static char messaggio_test[] = "prova";
 
 /* ALLOCATORI E DEALLOCATORI */
@@ -66,6 +68,39 @@ int clean_buffer_vuoto(void) {
     return 0;
 }
 
+int init_buffer_pieno(void) {
+    buffer_pieno = buffer_init(3);
+    msg_t* msg_1 = msg_init("test1");
+    msg_t* msg_2 = msg_init("test2");
+    msg_t* msg_3 = msg_init("test3");
+    if(buffer_pieno != NULL) {
+        buffer_pieno->queue[0] = *msg_1;
+        buffer_pieno->queue[1] = *msg_2;
+        buffer_pieno->queue[2] = *msg_3;
+        buffer_pieno->k = 3;
+        return 0;
+    }
+    else
+        return -1;
+}
+
+int clean_buffer_pieno(void) {
+    buffer_destroy(buffer_pieno);
+    return 0;
+}
+
+int init_buffer_vuoto02(void) {
+    buffer_vuoto02 = buffer_init(3);
+    if(buffer_vuoto02 != NULL)
+        return 0;
+    else
+        return -1;
+}
+
+int clean_buffer_vuoto02(void) {
+    buffer_destroy(buffer_vuoto02);
+    return 0;
+}
 
 /* TEST DELLA PRIMA SUITE */
 
@@ -194,7 +229,6 @@ void test_consumazione_produzione_non_bloccante_buffer_unitario_vuoto(void) {
 /* TEST DELLA QUARTA SUITE CON I METODI DI SUPPORTO */
 
 /* Ho supposto un buffer che può ospitare al più 3 messaggi */
-/* Test produzione concorrente di molteplici messaggi in un buffer unitario vuoto; il buffer si satura in corso VERSIONE BLOCCANTE */
 
 void do_put_bloccante02(msg_t* messaggio) {
     msg_t* messaggio_ritornato = put_bloccante(buffer_vuoto, messaggio);
@@ -205,6 +239,8 @@ void do_put_non_bloccante02(msg_t* messaggio) {
     msg_t* messaggio_ritornato = put_non_bloccante(buffer_vuoto, messaggio);
     pthread_exit(messaggio_ritornato);
 }
+
+/* Test produzione concorrente di molteplici messaggi in un buffer unitario vuoto; il buffer si satura in corso VERSIONE BLOCCANTE */
 
 void test_produzione_concorrente_molteplici_messaggi_buffer_vuoto_bloccante(void) {
     pthread_t t1,t2,t3,t4;
@@ -236,6 +272,8 @@ void test_produzione_concorrente_molteplici_messaggi_buffer_vuoto_bloccante(void
     msg_destroy(r2);
     msg_destroy(r3);
 }
+
+/* Test produzione concorrente di molteplici messaggi in un buffer unitario vuoto; il buffer si satura in corso VERSIONE NON BLOCCANTE */
 
 void test_produzione_concorrente_molteplici_messaggi_buffer_vuoto_non_bloccante(void) {
     clean_buffer_vuoto();
@@ -273,6 +311,157 @@ void test_produzione_concorrente_molteplici_messaggi_buffer_vuoto_non_bloccante(
     msg_destroy(r4);
 }
 
+
+
+/* TEST DELLA QUINTA SUITE CON I METODI DI SUPPORTO */
+/* Ho supporto un buffer pieno con capacità tre e contenente tre messaggi, 'test1', 'test2' e 'test3' rispettivamente */
+
+void do_get_bloccante03(void) {
+    msg_t* m1 = get_bloccante(buffer_pieno);
+    pthread_exit(m1);
+}
+
+void do_get_non_bloccante03(void) {
+    msg_t* m1 = get_non_bloccante(buffer_pieno);
+    pthread_exit(m1);
+}
+
+/* Test consumazione concorrente di molteplici messaggi da un buffer pieno di capacità 3 VERSIONE BLOCCANTE */
+
+void test_consumazione_concorrente_buffer_pieno_bloccante(void) {
+    pthread_t t1,t2,t3;
+    msg_t* m1 = NULL;
+    msg_t* m2 = NULL;
+    msg_t* m3 = NULL;
+    pthread_create(&t1, NULL, &do_get_bloccante03, NULL);
+    pthread_create(&t2, NULL, &do_get_bloccante03, NULL);
+    pthread_create(&t3, NULL, &do_get_bloccante03, NULL);
+    pthread_join(t1, &m1);
+    pthread_join(t2, &m2);
+    pthread_join(t3, &m3);
+    CU_ASSERT_EQUAL(m1->content, "test1");
+    CU_ASSERT_EQUAL(m2->content, "test2");
+    CU_ASSERT_EQUAL(m3->content, "test3");
+    CU_ASSERT_EQUAL(buffer_pieno->k, 0);
+}
+
+/* Test consumazione concorrente di molteplici messaggi da un buffer pieno di capacità 3 VERSIONE NON BLOCCANTE */
+
+void test_consumazione_concorrente_buffer_pieno_non_bloccante(void) {
+    clean_buffer_pieno();
+    init_buffer_pieno();
+    pthread_t t1,t2,t3;
+    msg_t* m1 = NULL;
+    msg_t* m2 = NULL;
+    msg_t* m3 = NULL;
+    pthread_create(&t1, NULL, &do_get_non_bloccante03, NULL);
+    pthread_create(&t2, NULL, &do_get_non_bloccante03, NULL);
+    pthread_create(&t3, NULL, &do_get_non_bloccante03, NULL);
+    sleep(2);
+    pthread_join(t1, &m1);
+    pthread_join(t2, &m2);
+    pthread_join(t3, &m3);
+    CU_ASSERT_EQUAL(m1->content, "test1");
+    CU_ASSERT_EQUAL(m2->content, "test2");
+    CU_ASSERT_EQUAL(m3->content, "test3");
+    CU_ASSERT_EQUAL(buffer_pieno->k, 0);
+}
+
+
+
+/* TEST DELLA SESTA SUITE CON I METODI DI SUPPORTO */
+/* Ho supposto un buffer vuoto con capacità 3. */
+void do_put_bloccante04(msg_t* messaggio) {
+    msg_t* ritornato = put_bloccante(buffer_vuoto02, messaggio);
+    pthread_exit(ritornato);
+}
+
+void do_get_bloccante04(void) {
+    msg_t* ritornato = get_bloccante(buffer_vuoto02);
+    pthread_exit(ritornato);
+}
+
+void do_put_non_bloccante04(msg_t* messaggio) {
+    msg_t* ritornato = put_non_bloccante(buffer_vuoto02, messaggio);
+    pthread_exit(ritornato);
+}
+
+void do_get_non_bloccante04(void) {
+    msg_t* ritornato = get_non_bloccante(buffer_vuoto02);
+    pthread_exit(ritornato);
+}
+
+/* Test consumazioni e produzioni concorrenti di molteplici messaggi in un buffer VERSIONE BLOCCANTE */
+void test_produttori_consumatori_molteplici_messaggi_buffer_bloccante(void) {
+    pthread_t t1,t2,t3,t4,t5,t6, t7;
+    msg_t* m1 = msg_init("test1");
+    msg_t* m2 = msg_init("test2");
+    msg_t* m3 = msg_init("test3");
+    msg_t* m4 = msg_init("test4");
+    msg_t* r1 = NULL;
+    msg_t* r2 = NULL;
+    msg_t* r3 = NULL;
+    msg_t* r4 = NULL;
+    pthread_create(&t1, NULL, &do_get_bloccante04, NULL);
+    pthread_create(&t2, NULL, &do_get_bloccante04, NULL);
+    pthread_create(&t3, NULL, &do_put_bloccante04, m1);
+    pthread_join(t3, NULL);
+    pthread_join(t1, &r1);
+    CU_ASSERT_EQUAL(m1->content, r1->content);
+    CU_ASSERT_EQUAL(buffer_vuoto02->k, 0);
+    pthread_create(&t4, NULL, &do_get_bloccante04, NULL);
+    pthread_create(&t5, NULL, &do_put_bloccante04, m2);
+    pthread_create(&t6, NULL, &do_put_bloccante04, m3);
+    pthread_create(&t7, NULL, &do_put_bloccante04, m4);
+    sleep(2);
+    pthread_join(t5, NULL);
+    pthread_join(t6, NULL);
+    pthread_join(t7, &r4);
+    pthread_join(t2, &r2);
+    pthread_join(t4, &r3);
+    CU_ASSERT_EQUAL(m2->content, r2->content);
+    CU_ASSERT_EQUAL(m3->content, r3->content);
+    CU_ASSERT_EQUAL(buffer_vuoto02->queue[buffer_vuoto02->T].content, r4->content);
+    msg_destroy(m1);
+    msg_destroy(m2);
+    msg_destroy(m3);
+    msg_destroy(m4);
+}
+
+/* Test consumazioni e produzioni concorrenti di molteplici messaggi in un buffer VERSIONE NON BLOCCANTE */
+void test_produttori_consumatori_molteplici_messaggi_buffer_non_bloccante(void) {
+    clean_buffer_vuoto02();
+    init_buffer_vuoto02();
+    pthread_t t1,t2,t3,t4,t5,t6, t7;
+    msg_t* m1 = msg_init("test1");
+    msg_t* m2 = msg_init("test2");
+    msg_t* m3 = msg_init("test3");
+    msg_t* m4 = msg_init("test4");
+    msg_t* r1 = NULL;
+    msg_t* r2 = NULL;
+    msg_t* r3 = NULL;
+    pthread_create(&t1, NULL, &do_get_non_bloccante04, NULL);
+    pthread_create(&t2, NULL, &do_put_non_bloccante04, m1);
+    pthread_join(t1, &r1);
+    pthread_join(t2, NULL);
+    CU_ASSERT_EQUAL(r1, BUFFER_ERROR);
+    CU_ASSERT_EQUAL(buffer_vuoto02->k, 1);
+    pthread_create(&t4, NULL, &do_get_non_bloccante04, NULL);
+    pthread_create(&t5, NULL, &do_put_non_bloccante04, m2);
+    pthread_create(&t6, NULL, &do_put_non_bloccante04, m3);
+    pthread_create(&t7, NULL, &do_get_non_bloccante04, NULL);
+    pthread_join(t4, &r2);
+    pthread_join(t5, NULL);
+    pthread_join(t6, NULL);
+    pthread_join(t7, &r3);
+    CU_ASSERT_EQUAL(m1->content, r2->content);
+    CU_ASSERT_EQUAL(m2->content, r3->content);
+    CU_ASSERT_EQUAL(buffer_vuoto02->queue[buffer_vuoto02->T].content, m3->content);
+    msg_destroy(m1);
+    msg_destroy(m2);
+    msg_destroy(m3);
+    msg_destroy(m4);
+}
 
 int main() {
     /* inizializzazione del registro test */
@@ -333,6 +522,31 @@ int main() {
         return CU_get_error();
     }
     
+    /*QUINTA SUITE */
+    pSuite = CU_add_suite("Consumazione concorrente di molteplici messaggi da un buffer pieno", init_buffer_pieno, clean_buffer_pieno);
+    if(NULL == pSuite) {
+        CU_cleanup_registry();
+        return CU_get_error();
+    }
+    
+    if((NULL == CU_add_test(pSuite, "Test put_bloccante()", test_consumazione_concorrente_buffer_pieno_bloccante))||
+       (NULL == CU_add_test(pSuite, "Test put_non_bloccante()", test_consumazione_concorrente_buffer_pieno_non_bloccante))) {
+        CU_cleanup_registry();
+        return CU_get_error();
+    }
+    
+    /*SESTA SUITE */
+    pSuite = CU_add_suite("Consumazioni e produzioni concorrenti di molteplici messaggi in un buffer", init_buffer_vuoto02, clean_buffer_vuoto02);
+    if(NULL == pSuite) {
+        CU_cleanup_registry();
+        return CU_get_error();
+    }
+    
+    if((NULL == CU_add_test(pSuite, "Test put_bloccante()", test_produttori_consumatori_molteplici_messaggi_buffer_bloccante))||
+       (NULL == CU_add_test(pSuite, "Test put_non_bloccante()", test_produttori_consumatori_molteplici_messaggi_buffer_non_bloccante))) {
+        CU_cleanup_registry();
+        return CU_get_error();
+    }
     
     /* esegui tutti i test */
     CU_basic_set_mode(CU_BRM_VERBOSE);

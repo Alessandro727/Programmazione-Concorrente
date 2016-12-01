@@ -19,8 +19,8 @@ typedef struct buffer {
     int D; //indice per gli inserimenti
     int size; //dimensione del buffer
     int k; //contatore dei messaggi presenti nel buffer
-    pthread_cond_t non_vuoto; //semaforo per indicare il buffer non vuoto
-    pthread_cond_t non_pieno; //semaforo per indicare il buffer non pieno
+    pthread_cond_t non_vuoto; //variabile condizione per indicare il buffer non vuoto
+    pthread_cond_t non_pieno; //variabile condizione per indicare il buffer non pieno
     pthread_mutex_t buffer; //mutex associato alle variabili condizione
     pthread_mutex_t uso_t; //semaforo per la gestione dell'accesso all'indice t
     pthread_mutex_t uso_d; //semaforo per la gesione dell'accesso all'indice d

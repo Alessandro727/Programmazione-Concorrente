@@ -1,0 +1,5 @@
+I test con CUnit li ho scritti all'interno del file main.c, poiché ho trovato diversi problemi con l'installazione di quest'ultimo, ho risolto includendo all'interno del codice il path assoluto del file, in caso quello va cambiato a seconda del sistema operativo di esecuzione.
+Il codice è organizzato come:
+	- msg.h e msg.c: che rappresentano rispettivamente l'header e l'implementazione del messaggio.
+	- buffer.h e buffer.c: che rappresentano rispettivamente l'header e l'implementazione del buffer. Per quest'ultimo ho deciso di utilizzare le variabili condizione non_pieno e non_vuoto per indicare lo stato del buffer, un mutex associato per il controllo, e altri due mutex per la gestione dell'accesso agli indici.
+	

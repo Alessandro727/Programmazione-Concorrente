@@ -15,6 +15,6 @@
 #include "poison_pill.h"
 #include <pthread.h>
 
-void* create_msg_sequence(msg_t* msg_array, int size);
+void* create_msg_sequence(msg_t* msg_array[]);
 
 #endif /* provider_h */

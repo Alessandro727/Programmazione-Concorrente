@@ -14,6 +14,5 @@
 #include "reader_list.h"
 
 void* dispatch_message();
-void* remove_slow_readers();
 
 #endif /* dispatcher_h */

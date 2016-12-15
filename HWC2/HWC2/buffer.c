@@ -120,13 +120,3 @@ msg_t* get_non_bloccante(buffer_t* buffer) {
     
     return msg;
 }
-
-void clean_buffer(buffer_t* buffer) {
-    pthread_mutex_lock(&buffer->uso_d);
-    pthread_mutex_lock(&buffer->uso_t);
-    buffer->k = 0;
-    buffer->T = 0;
-    buffer->D = 0;
-    pthread_mutex_unlock(&buffer->uso_d);
-    pthread_mutex_unlock(&buffer->uso_t);
-}

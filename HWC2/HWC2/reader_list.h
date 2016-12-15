@@ -13,6 +13,11 @@
 #include "reader.h"
 #include "list.h"
 
+typedef struct {
+    reader_buffer_t* buffer;
+    msg_t* msg;
+}parameters;
+
 list_t* reader_list;
 iterator_t* iterator;
 pthread_mutex_t reader_list_mutex;
@@ -25,7 +30,7 @@ int reader_list_isEmpty();
 void reader_list_addReader(void*);
 int reader_list_removeReader(void*);
 void reader_list_insert_broadcast(msg_t*);
-reader_t* reader_list_analyze();
-double treshold_calculate();
+void reader_list_insert_broadcast_poison_pill();
+void remove_slow_readers();
 
 #endif /* reader_list_h */

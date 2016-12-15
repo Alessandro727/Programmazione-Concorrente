@@ -7,6 +7,7 @@
 //
 
 #include "reader.h"
+#include "reader_list.h"
 #include <stdlib.h>
 #include <unistd.h>
 
@@ -16,6 +17,7 @@ reader_t* reader_init(int size, int delay, char* name) {
     new_reader->name = name;
     new_reader->processing_time = delay;
     new_reader->reader_buffer = reader_buffer_init(size);
+    new_reader->check = 0;
     return new_reader;
 }
 

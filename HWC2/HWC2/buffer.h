@@ -44,7 +44,4 @@ msg_t* get_bloccante(buffer_t*);
 /* estrazione non bloccante, restituisce BUFFER_ERROR se vuoto, ed il valore estratto in caso contrario */
 msg_t* get_non_bloccante(buffer_t*);
 
-/* rimuove tutti i messaggi salvati nel buffer */
-void clean_buffer(buffer_t*);
-
 #endif /* buffer_h */

@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include "buffer.h"
+#include "poison_pill.h"
 
 typedef struct {
     buffer_t* reader_buffer;
@@ -19,7 +20,8 @@ typedef struct {
 // primitive del reader buffer
 reader_buffer_t* reader_buffer_init(int);
 void reader_buffer_destroy(reader_buffer_t*);
-void reader_buffer_insert(reader_buffer_t*, msg_t*);
+msg_t* reader_buffer_insert(reader_buffer_t*, msg_t*);
+void reader_buffer_insert_bloccante(reader_buffer_t*);
 msg_t* reader_buffer_read(reader_buffer_t*);
 
 

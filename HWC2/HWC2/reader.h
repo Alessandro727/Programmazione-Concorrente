@@ -19,6 +19,7 @@ typedef struct {
     char* name;
     int processing_time;
     reader_buffer_t* reader_buffer;
+    int check;
 }reader_t;
 
 reader_t* reader_init(int, int, char*);

@@ -304,6 +304,15 @@
 		09A3085A1DF8437B00499DEF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				LIBRARY_SEARCH_PATHS = (
+					/usr/local/opt/cunit,
+					/usr/local/opt/cunit/lib,
+					/usr/local/opt/cunit/include,
+				);
+				OTHER_LDFLAGS = (
+					"-lcunit",
+					"-lncurses",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -311,6 +320,15 @@
 		09A3085B1DF8437B00499DEF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				LIBRARY_SEARCH_PATHS = (
+					/usr/local/opt/cunit,
+					/usr/local/opt/cunit/lib,
+					/usr/local/opt/cunit/include,
+				);
+				OTHER_LDFLAGS = (
+					"-lcunit",
+					"-lncurses",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

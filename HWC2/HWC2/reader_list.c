@@ -19,10 +19,7 @@ void reader_list_destroy() {
 }
 
 int reader_list_size() {
-    pthread_mutex_lock(&(reader_list_mutex));
-    int dim = size(reader_list);
-    pthread_mutex_unlock(&(reader_list_mutex));
-    return dim;
+    return size(reader_list);
 }
 
 int reader_list_isEmpty() {
@@ -51,12 +48,40 @@ void reader_list_insert_broadcast(msg_t* message) {
     iterator = iterator_init(reader_list);
     while(hasNext(iterator)) {
         reader_t* reader = (reader_t*)next(iterator);
-        reader_buffer_insert(reader->reader_buffer, message);
+        msg_t* messaggio_inserito = reader_buffer_insert(reader->reader_buffer, message);
+        if(messaggio_inserito == BUFFER_ERROR) {
+            reader->check = 1;
+        }
     }
+    iterator_destroy(iterator);
     pthread_mutex_unlock(&(reader_list_mutex));
 }
 
-reader_t* reader_list_analyze() {
+void reader_list_insert_broadcast_poison_pill() {
+    pthread_mutex_lock(&(reader_list_mutex));
+    iterator = iterator_init(reader_list);
+    while(hasNext(iterator)) {
+        reader_t* reader = (reader_t*)next(iterator);
+        reader_buffer_insert_bloccante(reader->reader_buffer);
+    }
+    iterator_destroy(iterator);
+    pthread_mutex_unlock(&(reader_list_mutex));
+}
+
+void remove_slow_readers() {
+    pthread_mutex_lock(&reader_list_mutex);
+    iterator = iterator_init(reader_list);
+    while(hasNext(iterator)) {
+        reader_t* reader_temp = (reader_t*)next(iterator);
+        if(reader_temp->check == 1) {
+            reader_buffer_insert_bloccante(reader_temp->reader_buffer);
+        }
+    }
+    iterator_destroy(iterator);
+    pthread_mutex_unlock(&reader_list_mutex);
+}
+
+/*void* reader_list_analyze() {
     pthread_mutex_lock(&(reader_list_mutex));
     double treshold = treshold_calculate();
     iterator = iterator_init(reader_list);
@@ -72,7 +97,7 @@ reader_t* reader_list_analyze() {
     return NULL;
 }
 
-/* funzione di supporto sul calcolo della soglia del tempo di processamento */
+
 double treshold_calculate() {
     iterator = iterator_init(reader_list);
     int sum_proc_time = 0;
@@ -84,7 +109,7 @@ double treshold_calculate() {
     int n = reader_list_size();
     double treshold = sum_proc_time/n;
     return treshold;
-}
+}*/
 
 
 

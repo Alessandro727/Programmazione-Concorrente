@@ -14,7 +14,6 @@
 		09A308561DF8437B00499DEF /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 09A308551DF8437B00499DEF /* main.c */; };
 		09A3085F1DF843AF00499DEF /* msg.c in Sources */ = {isa = PBXBuildFile; fileRef = 09A3085D1DF843AF00499DEF /* msg.c */; };
 		09A308621DF843EB00499DEF /* buffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 09A308601DF843EB00499DEF /* buffer.c */; };
-		09A308641DF8443700499DEF /* TestDriver.c in Sources */ = {isa = PBXBuildFile; fileRef = 09A308631DF8443700499DEF /* TestDriver.c */; };
 		09A308671DF8446500499DEF /* list.c in Sources */ = {isa = PBXBuildFile; fileRef = 09A308651DF8446500499DEF /* list.c */; };
 		09A308751DF8490C00499DEF /* listDomainAssertion.c in Sources */ = {isa = PBXBuildFile; fileRef = 09A308731DF8490C00499DEF /* listDomainAssertion.c */; };
 		09A308781DF8497800499DEF /* testList.c in Sources */ = {isa = PBXBuildFile; fileRef = 09A308761DF8497800499DEF /* testList.c */; };
@@ -52,7 +51,6 @@
 		09A3085E1DF843AF00499DEF /* msg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = msg.h; sourceTree = "<group>"; };
 		09A308601DF843EB00499DEF /* buffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = buffer.c; sourceTree = "<group>"; };
 		09A308611DF843EB00499DEF /* buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = buffer.h; sourceTree = "<group>"; };
-		09A308631DF8443700499DEF /* TestDriver.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = TestDriver.c; sourceTree = "<group>"; };
 		09A308651DF8446500499DEF /* list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = list.c; sourceTree = "<group>"; };
 		09A308661DF8446500499DEF /* list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = list.h; sourceTree = "<group>"; };
 		09A308731DF8490C00499DEF /* listDomainAssertion.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = listDomainAssertion.c; sourceTree = "<group>"; };
@@ -106,7 +104,6 @@
 				09A3085E1DF843AF00499DEF /* msg.h */,
 				09A308601DF843EB00499DEF /* buffer.c */,
 				09A308611DF843EB00499DEF /* buffer.h */,
-				09A308631DF8443700499DEF /* TestDriver.c */,
 				09A308651DF8446500499DEF /* list.c */,
 				09A308661DF8446500499DEF /* list.h */,
 				09A308731DF8490C00499DEF /* listDomainAssertion.c */,
@@ -202,7 +199,6 @@
 				09A308871DF86CF200499DEF /* reader.c in Sources */,
 				09A308751DF8490C00499DEF /* listDomainAssertion.c in Sources */,
 				09A308841DF868AF00499DEF /* reader_buffer.c in Sources */,
-				09A308641DF8443700499DEF /* TestDriver.c in Sources */,
 				09A3087E1DF85B1200499DEF /* provider_buffer.c in Sources */,
 				09674E7D1DFF057500DF0854 /* accepter_buffer.c in Sources */,
 				09A308621DF843EB00499DEF /* buffer.c in Sources */,

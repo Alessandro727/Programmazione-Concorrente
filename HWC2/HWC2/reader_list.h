@@ -32,5 +32,6 @@ int reader_list_removeReader(void*);
 void reader_list_insert_broadcast(msg_t*);
 void reader_list_insert_broadcast_poison_pill();
 void remove_slow_readers();
+void reader_list_join_threads();
 
 #endif /* reader_list_h */

@@ -28,6 +28,10 @@ msg_t* accepter_buffer_remove() {
     return get_bloccante(accepter_buffer);
 }
 
+void accepter_buffer_insert_poison_pill() {
+    put_bloccante(accepter_buffer, POISON_PILL);
+}
+
 void accepter_buffer_removeAll() {
     int size = accepter_buffer->size;
     int i;

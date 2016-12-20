@@ -24,6 +24,6 @@ void provider_buffer_insert(msg_t* msg) {
 }
 
 msg_t* provider_buffer_read() {
-    msg_t* result = get_non_bloccante(provider_buffer);
+    msg_t* result = get_bloccante(provider_buffer);
     return result;
 }

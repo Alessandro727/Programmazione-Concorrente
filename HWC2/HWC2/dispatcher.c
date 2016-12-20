@@ -9,34 +9,19 @@
 #include "dispatcher.h"
 
 void* dispatch_message() {
-    msg_t* message = provider_buffer_read();
-    while(message != BUFFER_ERROR) {
-        if(reader_list_isEmpty()) {
-            printf("Il dispatcher ha letto il messaggio %d\n", (int)message->content);
-        }
+    while(1) {
+        msg_t* msg = provider_buffer_read();
+        if(msg->content == 0) break;
         if(!reader_list_isEmpty()) {
-            if(message == POISON_PILL) {
-                reader_list_insert_broadcast_poison_pill();
-                pthread_exit(NULL);
-            }
-            else if(message!=NULL) {
-                reader_list_insert_broadcast(message);
-                remove_slow_readers();
-            }
-            else pthread_exit(NULL);
+            reader_list_insert_broadcast(msg);
+            remove_slow_readers();
         }
-        message = provider_buffer_read();
     }
-    pthread_exit(NULL);
+    if(reader_list_isEmpty())
+        pthread_exit(NULL);
+    else {
+        reader_list_insert_broadcast_poison_pill();
+        pthread_exit(NULL);
+    }
 }
 
-/*void* remove_slow_readers() {
-    reader_t* slow_reader = NULL;
-    do {
-        slow_reader = reader_list_analyze();
-        if(slow_reader != NULL) {
-            reader_buffer_insert(slow_reader->reader_buffer, POISON_PILL);
-        }
-    }while(slow_reader!=NULL);
-    pthread_exit(NULL);
-}*/

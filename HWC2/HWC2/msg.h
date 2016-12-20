@@ -9,12 +9,19 @@
 #ifndef msg_h
 #define msg_h
 
+
 typedef struct message {
     void *content;
     struct message * (*msg_init)(void*); //creazione msg
     void (*msg_destroy)(struct message *); //deallocazione msg
     struct message * (*msg_copy)(struct message *); //copia del msg
 }msg_t;
+
+typedef struct {
+    msg_t** messages;
+    int size;
+} args;
+
 
 msg_t *msg_init(void*);
 

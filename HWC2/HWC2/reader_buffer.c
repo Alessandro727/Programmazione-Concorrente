@@ -21,8 +21,7 @@ void reader_buffer_destroy(reader_buffer_t* buffer) {
 }
 
 msg_t* reader_buffer_insert(reader_buffer_t* buffer, msg_t* msg) {
-    msg_t* result = put_non_bloccante(buffer->reader_buffer, msg);
-    return result;
+    return put_non_bloccante(buffer->reader_buffer, msg);
 }
 
 /* inserisce poison_pill con la put bloccante */
@@ -32,7 +31,7 @@ void reader_buffer_insert_bloccante(reader_buffer_t* buffer) {
 }
 
 msg_t* reader_buffer_read(reader_buffer_t* buffer) {
-    msg_t* result = get_non_bloccante(buffer->reader_buffer);
+    msg_t* result = get_bloccante(buffer->reader_buffer);
     return result;
 }
 

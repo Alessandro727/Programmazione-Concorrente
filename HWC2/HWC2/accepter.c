@@ -12,10 +12,14 @@
 
 void submitRequest(char* name) {
     msg_t* request = accepter_buffer_remove();
-    if(request!=&POISON_PILL_MSG) {
-        int delay = rand()%20;
+    if(request->content!=0) {
+        int delay = (rand()%5);
         reader_t* reader = reader_init(10, delay, name);
-        reader_list_addReader((void*)reader);
+        reader_list_addReader(reader);
+        pthread_create(&reader->thread, NULL, reader_consume, reader);
+    }
+    else {
+        pthread_exit(NULL);
     }
     free(request);
 }

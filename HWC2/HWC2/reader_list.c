@@ -42,7 +42,6 @@ int reader_list_removeReader(void* reader) {
     return isDeleted;
 }
 
-/* valido sia per messaggi normali che per POISON_PILL */
 void reader_list_insert_broadcast(msg_t* message) {
     pthread_mutex_lock(&(reader_list_mutex));
     iterator = iterator_init(reader_list);
@@ -81,36 +80,16 @@ void remove_slow_readers() {
     pthread_mutex_unlock(&reader_list_mutex);
 }
 
-/*void* reader_list_analyze() {
-    pthread_mutex_lock(&(reader_list_mutex));
-    double treshold = treshold_calculate();
+void reader_list_join_threads() {
+    pthread_mutex_lock(&reader_list_mutex);
     iterator = iterator_init(reader_list);
     while(hasNext(iterator)) {
         reader_t* reader = (reader_t*)next(iterator);
-        if(reader->processing_time > treshold) {
-            pthread_mutex_unlock(&(reader_list_mutex));
-            return reader;
-        }
+        pthread_join(reader->thread, NULL);
     }
     iterator_destroy(iterator);
-    pthread_mutex_unlock(&(reader_list_mutex));
-    return NULL;
+    pthread_mutex_unlock(&reader_list_mutex);
 }
-
-
-double treshold_calculate() {
-    iterator = iterator_init(reader_list);
-    int sum_proc_time = 0;
-    while(hasNext(iterator)) {
-        reader_t* temp = (reader_t*)next(iterator);
-        sum_proc_time += temp->processing_time;
-    }
-    iterator_destroy(iterator);
-    int n = reader_list_size();
-    double treshold = sum_proc_time/n;
-    return treshold;
-}*/
-
 
 
 

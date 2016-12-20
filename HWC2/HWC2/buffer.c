@@ -9,6 +9,7 @@
 #include "buffer.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include "poison_pill.h"
 
 buffer_t* buffer_init(unsigned int maxsize) {
     buffer_t* new_buffer = malloc(sizeof(buffer_t));
@@ -81,6 +82,7 @@ msg_t* put_non_bloccante(buffer_t* buffer, msg_t* msg) {
 }
 
 msg_t* get_bloccante(buffer_t* buffer) {
+    msg_t* msg1 = NULL;
     msg_t* msg = NULL;
     //faccio attesa attiva finché non entra almeno un msg nel buffer
     pthread_mutex_lock(&buffer->buffer);
@@ -89,7 +91,8 @@ msg_t* get_bloccante(buffer_t* buffer) {
     }
     //procedo con la consumazione del messaggio
     pthread_mutex_lock(&buffer->uso_t);
-    msg = &buffer->queue[buffer->T];
+    msg1 = &buffer->queue[buffer->T];
+    msg = msg1->msg_copy(msg1);
     buffer->T = (buffer->T+1)%(buffer->size);
     buffer->k = buffer->k - 1;
     pthread_mutex_unlock(&buffer->uso_t);
@@ -101,6 +104,7 @@ msg_t* get_bloccante(buffer_t* buffer) {
 
 msg_t* get_non_bloccante(buffer_t* buffer) {
     msg_t* msg;
+    msg_t* msg1;
     
     //se il buffer è vuoto ritorno BUFFER_ERROR
     pthread_mutex_lock(&buffer->buffer);
@@ -111,7 +115,8 @@ msg_t* get_non_bloccante(buffer_t* buffer) {
     
     //procedo con la consumazione del messaggio
     pthread_mutex_lock(&buffer->uso_t);
-    msg = &buffer->queue[buffer->T];
+    msg1 = &buffer->queue[buffer->T];
+    msg = msg1->msg_copy(msg1);
     buffer->T = (buffer->T+1)%(buffer->size);
     buffer->k = buffer->k - 1;
     pthread_mutex_unlock(&buffer->uso_t);

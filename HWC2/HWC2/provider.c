@@ -1,17 +1,11 @@
-//
-//  provider.c
-//  HWC2
-//
-//  Created by Marco Faretra on 07/12/16.
-//  Copyright © 2016 Marco Faretra. All rights reserved.
-//
-
 #include "provider.h"
 
-void* create_msg_sequence(msg_t* msg_array[]) {
-    int i = 0 ;
-    while (msg_array[i]!=POISON_PILL) {
-        provider_buffer_insert(msg_array[i]);
+void* create_msg_sequence(void* arguments) {
+    args *parameters = (args*)arguments;
+    int i=0;
+    int size= parameters->size;
+    while(i<size){
+        provider_buffer_insert(parameters->messages[i]);
         i++;
     }
     provider_buffer_insert(POISON_PILL);

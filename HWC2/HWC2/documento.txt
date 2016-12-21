@@ -1,0 +1,4 @@
+Ho utilizzato due variabili globali di tipo buffer_t per il provider_buffer (deve essere accedibile sia dal provider che dal buffer) e per l'accepter_buffer (poiché deve essere utilizzabile dall'accepter e da chi effettua le richieste). 
+Ho reso thread-safe la libreria sulle liste fornita, attraverso l'utilizzo di un mutex. 
+Ho introdotto un processing time per ogni reader, simulando così il ritardo a processare messaggi (facendo uso di una sleep prima di effettuare la consumazione del messaggio), ed utilizzando quindi anche una sleep pari alla soglia fissata, quando faccio l'inserimento (per dare tempo ai reader di consumare). 
+Inoltre è presente un problema che non sono riuscito a risolvere, non riesco a leggere il messaggio POISON_PILL, quindi per verificare il POISON_PILL accedo al content del messaggio verificando se è NULL o meno. 

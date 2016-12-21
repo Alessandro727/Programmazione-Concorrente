@@ -47,6 +47,9 @@ void reader_list_insert_broadcast(msg_t* message) {
     iterator = iterator_init(reader_list);
     while(hasNext(iterator)) {
         reader_t* reader = (reader_t*)next(iterator);
+        //inserisco la sleep per dare il tempo ai reader di consumare
+        //praticamente questa sleep equivale alla soglia che fisso per il quale il dispatcher decide di uccidere un reader.
+        sleep(1);
         msg_t* messaggio_inserito = reader_buffer_insert(reader->reader_buffer, message);
         if(messaggio_inserito == BUFFER_ERROR) {
             reader->check = 1;

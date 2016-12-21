@@ -34,6 +34,7 @@ void* reader_consume(reader_t* reader) {
     while(temp->content!=NULL) {
         sleep(reader->processing_time);
         printf("%s ha letto il messaggio %s\n", reader->name, temp->content);
+        msg_destroy(temp);
         temp = reader_buffer_read(reader->reader_buffer);
     }
     // Rimuovi dalla lista dei reader questo reader

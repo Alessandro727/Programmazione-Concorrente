@@ -2,3 +2,5 @@ Ho utilizzato due variabili globali di tipo buffer_t per il provider_buffer (dev
 Ho reso thread-safe la libreria sulle liste fornita, attraverso l'utilizzo di un mutex. 
 Ho introdotto un processing time per ogni reader, simulando così il ritardo a processare messaggi (facendo uso di una sleep prima di effettuare la consumazione del messaggio), ed utilizzando quindi anche una sleep pari alla soglia fissata, quando faccio l'inserimento (per dare tempo ai reader di consumare). 
 Inoltre è presente un problema che non sono riuscito a risolvere, non riesco a leggere il messaggio POISON_PILL, quindi per verificare il POISON_PILL accedo al content del messaggio verificando se è NULL o meno. 
+
+I test sono scritti all'interno del file testMain.c

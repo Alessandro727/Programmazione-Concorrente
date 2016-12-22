@@ -417,6 +417,9 @@ void test_reader_consume(void) {
 int init_suite_accepter(void) {
     reader_list_init();
     accepter_buffer_init(5);
+    pthread_t t1;
+    pthread_create(&t1, NULL, accepter_buffer_insert, msg_init("1"));
+    pthread_join(t1, NULL);
     nameReader = malloc(sizeof(char)*30);
     strcpy(nameReader, "reader1");
     return 0;
@@ -430,10 +433,9 @@ int clean_suite_accepter(void) {
 }
 
 void test_submit_request(void) {
-    pthread_t t1;
-    pthread_create(&t1, NULL, submitRequest, nameReader);
-    pthread_join(t1, NULL);
+    submitRequest(nameReader);
     CU_ASSERT_EQUAL(reader_list_size(), 1);
+    accepter_buffer_insert_poison_pill();
 }
 
 /* INIZIO TEST DISPATCHER */
@@ -601,13 +603,13 @@ int main() {
     }
 
     /*OTTAVA SUITE : ACCEPTER*/
-    pSuite = CU_add_suite("Creazione di un reader ed inserito nella reader_list e a sua volta lanciato per la consumazione del messaggio.", init_suite_reader, clean_suite_reader);
+    pSuite = CU_add_suite("Creazione di un reader ed inserito nella reader_list.", init_suite_accepter, clean_suite_accepter);
     if(NULL == pSuite) {
         CU_cleanup_registry();
         return CU_get_error();
     }
     
-    if((NULL == CU_add_test(pSuite, "submit_request(name)", test_reader_consume))) {
+    if((NULL == CU_add_test(pSuite, "submit_request(name)", test_submit_request))) {
         CU_cleanup_registry();
         return CU_get_error();
     }

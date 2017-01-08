@@ -1,0 +1,80 @@
+Non ho fatto uso di collezioni appartenenti a java.util.concurrent poiché l'accesso al buffer viene sempre protetto da lock.
+
+Ho trovato problemi con Eclipse, non sono riuscito ad esportare il jar riguardante lo Speed-up di HWJ2, non sono riuscito a risolvere, sembra non lo riconosca come main.
+
+In HWJ1 ho utilizzato la collezione Queue per implementare il buffer con implementazione LinkedList.
+Ho utilizzato un'interfaccia Lock con implementazione ReentrantLock per garantire la thread-safeness.
+Che viene bloccato prima di effettuare l'estrazione e sbloccato dopo aver inserito i figli, se presenti.
+Per la terminazione ho usato una variabile booleana, di default a false e viene posta a true quando il buffer risulta vuoto.
+Per ottimizzare l'elaborazione dei risultati parziali si fa uso di ExecutorCompletionService.
+
+In HWJ2 ogni worker thread possiede un proprio buffer, ho quindi utilizzato la collezione Map, con implementazione HashMap, avendo come chiave l'id univoco del thread e come valore il buffer di riferimento.
+I buffer nella mappa sono delle Deque implementate come LinkedList.
+Ho inoltre utilizzato una collezione List per i lock associati ad ogni thread, implementati come ArrayList, dove ogni Lock è implementato come ReentrantLock.
+Infine ho utilizzato un Lock aggiuntivo condiviso per l'operazione di work stealing.
+Anche qui per ottimizzare l'elaborazione dei risultati parziali si fa uso di ExecutorCompletionService.
+
+In HWJ3 si rappresenta il buffer come una Deque, implementata come LinkedList. 
+Ho stabilito la soglia indicante la massima profondità dell'albero per l'esecuzione seriale.
+Ho fatto diverse prove con la soglia, e il risultato migliore a livello di speed-up l'ho trovato intorno a 5.
+
+SPEED-UP:
+Al fakeProcessor ho passato max=2000.
+Le misurazioni sono state effettuate su un 2,5 GHz Intel Core i5, con due cpu fisiche con hyperthreading.
+I valori riportati sono calcolati:
+	- 5 esecuzioni di warm up
+	- 5 esecuzioni seriali calcolando il tempo di esecuzione, e si prende come tempo seriale la media
+	- 5 esecuzioni concorrenti di warm up
+	- 5 esecuzioni concorrenti calcolando il tempo di esecuzione e prendendo come tempo concorrente la media
+
+SPEED UP DI HWJ1
+Albero binario bilanciato
+nodi = 2047, speed-up = 3.1775147928994087
+nodi = 4095, speed-up = 3.193353474320242
+nodi = 8191, speed-up = 2.6520100502512562
+nodi = 16383, speed-up = 2.8339973439575035
+nodi = 32767, speed-up = 2.7913411458333335
+nodi = 65535, speed-up = 3.241901875355181
+Albero binario sbilanciato
+nodi= 2431, speed-up = 3.233160621761658
+nodi= 4607, speed-up = 3.1367292225201076
+nodi= 8703, speed-up = 3.110157367668097
+nodi= 16383, speed-up = 2.8691275167785233
+nodi= 30719, speed-up = 2.6370834708017155
+nodi= 57343, speed-up = 2.7005444646098002
+Albero binario fortemente sbilanciato
+nodi= 1001, speed-up = 3.25609756097561
+
+SPEED UP DI HWJ2
+Albero binario bilanciato
+nodi = 2047, speed-up = 3.1436781609195408
+nodi = 4095, speed-up = 2.7581863979848866
+nodi = 8191, speed-up = 2.995839112343967
+nodi = 16383, speed-up = 2.4693877551020407
+nodi = 32767, speed-up = 3.0802446923353726
+nodi = 65535, speed-up = 2.83594499520307
+Albero binario sbilanciato
+nodi= 2431, speed-up = 2.9723502304147464
+nodi= 4607, speed-up = 3.197969543147208
+nodi= 8703, speed-up = 2.4874213836477987
+nodi= 16383, speed-up = 2.7340488968395946
+nodi= 30719, speed-up = 3.05189921022941
+nodi= 57343, speed-up = 2.6799999999999997
+Albero binario fortemente sbilanciato
+nodi= 1001, speed-up = 2.847826086956522
+
+SPEED UP DI HWJ3
+Albero binario bilanciato
+nodi = 2047, speed-up = 2.135658914728682
+nodi = 4095, speed-up = 2.71007371007371
+nodi = 8191, speed-up = 2.7164366373902133
+nodi = 16383, speed-up = 2.8158584534731324
+nodi = 32767, speed-up = 2.3976138300462626
+nodi = 65535, speed-up = 2.8970364098221846
+Albero binario sbilanciato
+nodi= 2431, speed-up = 2.259927797833935
+nodi= 4607, speed-up = 3.1057471264367815
+nodi= 8703, speed-up = 2.7234803337306315
+nodi= 16383, speed-up = 3.3787561146051712
+nodi= 30719, speed-up = 3.0345345345345347
+nodi= 57343, speed-up = 2.9925821972734563

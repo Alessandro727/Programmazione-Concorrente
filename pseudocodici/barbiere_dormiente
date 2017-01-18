@@ -1,0 +1,41 @@
+BARBIERE DORMIENTE 
+
+concurrent program BARBIERE_DORMIENTE;
+
+type barbiere = concurrent procedure;
+begin
+	loop
+		P(C); //attendi clienti
+		P(MX); // aggiorna il n di clienti in attesa
+		in_attesa <- in_attesa - 1;
+		V(B); //segnala la disponibilità
+		V(MX); 
+		<<taglia_capelli>>
+	end
+end
+
+type cliente = concurrent procedure;
+begin 
+	<<raggiungi il negozio>>
+	P(MX);
+	if(in_attesa<N) //verifico se ci sta posto a sedere
+		in_attesa <- in_attesa + 1;
+		V(C); //sveglia il barbiere se dorme
+		V(MX);
+		P(B); //aspetta che il barbiere finisca
+		<<siedi per il taglio>>
+	else V(MX); //non ci sta posto a sedere, meglio ripassare
+end
+
+var Dormiente: barbiere;
+var CLIENTE array[0...NUM_CLIENTI] of cliente
+var C, MX, B: semaforo; //C è il semaforo associato ai clienti, MX mutex associato a in_attesa, B è il semaforo associato al barbiere
+var N = 5;
+var in_attesa : intero;
+begin 
+	INIZ_SEM(MX,1); INIZ_SEM(C,0); INIZ_SEM(B,0);
+	fork Dormiente;
+	for J <- 0 to NUM_CLIENTI do fork CLIENTE[J];
+	for J <- 0 to NUM_CLIENTI do join CLIENTE[J];
+	join Dormiente;
+end

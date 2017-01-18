@@ -1,0 +1,37 @@
+CINQUE FILOSOFI MANGIATORI CON UNO MANCINO
+/* Unica soluzione fair, senza stallo, con il massimo livello di parallelismo, semplice */
+/* Si ha che per forza prima o poi si libera l'altra forchetta, poiché essendo uno mancino non si ha mai conflitto */
+
+concurrent program CINQUE_FILOSOFI_MANGIATORI(I:0..4); //con uno mancino
+
+type filosofo = concurrent procedure(I:0..4);
+	begin
+		loop
+			<<pensa>>
+			P(F[I]); //prendo forchetta destra
+			P(F[(I+1)mod5]); //prendo forchetta sinistra
+			<<mangia>>
+			V(F[I]);
+			V(F[(I+1)mod5]);
+		end
+	end
+
+type filosofoMancino = concurrent procedure(I:0..4);
+	begin
+		loop
+			<<pensa>>
+			P(F[(I+1)mod5]); //prendo la forchetta sinistra
+			P(F[I]); //prendo la forchetta destra
+			<<mangia>>
+			V(F[(I+1)mod5]);
+			V(F[I]);
+		end
+	end
+
+var F:shared array[0..4] of semaforo; //variabile condivisa per modellare le forchette
+var A,B,C,D,E: filosofo;
+
+begin 
+	for J <- 0 to 4 do INIZ_SEM(F[J], 1);
+	cobegin A(0) || B(1) || C(2) || D(3) || E(4) coend
+end

@@ -1,0 +1,55 @@
+CINQUE FILOSOFI MANGIATORI APPROCCIO CONSERVATIVO
+/* Si rende indivisibile l'operazione di acquisizione delle risorse */
+/* Oltre al concetto di coppia di forchette vengono rappresentati i filosofi affamati */
+
+concurrent program CINQUE_FILOSOFI_MANGIATORI;
+type filosofo = concurrent procedure(I:0..4);
+	begin 
+		loop
+			<<pensa>>;
+			prendi_forchette(i);
+			<<mangia>>;
+			posa_forchette(i);
+		end
+	end
+
+concurrent procedure prendi_forchette(I:0..4)
+	begin 
+		P(R);
+		A[I] <- true
+		test(I)
+		V(R)
+		P(F[I])
+	end
+
+concurrent procedure posa_forchette(I:0..4)
+	begin
+		P(R);
+		FP[I]<-false;
+		A[I] <- false;
+		test((i-1)mod5); 
+		test((i+1)mod5);
+		V(R);
+	end
+
+concurrent procedure test(I:0..4)
+	begin
+		if(A[I] and not FP[(I-1)mod5] and not FP[(I+1)mod5])
+			FP[I] <- true;
+			V(F[I])
+	end
+
+var A,B,C,D,E: filosofo;
+	J:0..4
+var F:shared array[0..4] of semaforo; //rappresenta la coppia di forchette che servono all'i-esimo filosofo e non una sola
+var FP:shared array[0..4] of boolean; //FP[i] è vero se e solo se l'i-esima coppia di forchette è prenotata
+
+var A:shared array[0..4] of boolean; //A[i] è vero se e solo se l'i-esimo filosofo è affamato
+var R:semaforo; //semaforo per accedere in mutua esclusione su A e FP
+begin 
+	INIZ_SEM(R, 1);
+	for J <- 0 to 4 do INIZ_SEM(F[J], 0);
+	for I <- 0 to 4 do FP[I]<-false;
+	for K <- 0 to 4 do A[K] <-false;	
+	cobegin A(0) || B(1) || C(2) || D(3) || E(4) coend
+end

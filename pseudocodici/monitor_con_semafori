@@ -1,0 +1,16 @@
+IMPLEMENTAZIONE DEI MONITOR CON I SEMAFORI
+
+/* il corpo di ciascuna procedura è racchiuso tra P(MUTEX) V(MUTEX), usiamo la semantica signal_and_return, ad ogni variabile condizione ho associato: un contatore Ccond a 0, un semaforo Scond a 0 */
+/* Xcond è una variabile condizione */
+
+Xcond.wait: begin
+	Ccond <- Ccond + 1;
+	V(MUTEX); //libera il monitor
+	P(Scond); //attende una Xcond.signal
+	Ccond <- Ccond - 1;
+end;
+
+Xcond.signal: begin
+	if Ccond > 0 then V(Scond)
+	else V(MUTEX)
+end;

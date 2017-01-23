@@ -1,0 +1,21 @@
+IMPLEMENTAZIONE DEI SEMAFORI CON I MONITOR (con primitive wait e signal)
+
+/* la condizione su cui sincronizzarsi è S>0, a cui associamo una var condizione S_POSITIVO, la coda associata alla variabile condizione, in questo caso, svolge il ruolo della coda associata al semaforo */
+
+type semaforo = monitor 
+	var S: 0..LAST;
+	var S_POSITIVO: condition; //variabile condizione
+
+	entry procedure P begin 
+		while(S = 0) do S_POSITIVO.wait; end
+		S <- S - 1;
+	end
+
+	entry procedure V begin 
+		S <- S + 1;
+		S_POSITIVO.signal;
+	end
+	begin 
+		S <- 0;
+	end
+end monitor;

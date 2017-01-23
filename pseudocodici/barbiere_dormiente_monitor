@@ -1,0 +1,40 @@
+BARBIERE DORMIENTE CON I MONITOR (VARIANTE A PROD CONS)
+
+entry procedure DEPOSITA(M:messaggio)
+	begin
+		if(K<0) then begin
+			K <- K + 1;
+			D <- (D+1) mod N;
+			BUFFER[D] <- M;
+			NON_VUOTO.signal;
+			end
+		else if(K<N) then begin
+			K <- K + 1;
+			D <- (D+1) mod N;
+			BUFFER[D] <- M
+			end
+		else /* K>N */ then begin
+			K <- K+1;
+			NON_PIENO.wait;
+			D <- (D+1) mod N;
+			BUFFER[D] <- M;
+	end
+
+entry procedure PRELEVA(ref M1: messaggio)
+	begin 
+		if(K<=0) then begin
+			K <- K - 1;
+			NON_VUOTO.wait;
+			T <- (T+1) mod N;
+			M1 <- BUFFER[T];
+			end
+		else if(K<=N) then begin
+			K <- K - 1;
+			T <- (T+1) mod N;
+			M1 <- BUFFER[T];
+		else /* K>N */ then begin
+			K <- K + 1;
+			T <- (T+1) mod N;
+			M1 <- BUFFER[T];
+			NON_PIENO.signal;
+	end

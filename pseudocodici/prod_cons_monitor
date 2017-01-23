@@ -1,0 +1,34 @@
+PRODUTTORI CONSUMATORI CON I MONITOR (MAILBOX)
+
+/* Inutile l'accesso esclusivo degli indici poiché l'uso esclusivo del buffer è garantito dal monitor */
+
+type mailbox(messaggio) = monitor
+	N = ...
+	type indice = 0..N-1p
+	var BUFFER:array[indice] of messaggio;
+	var T,D : indice;
+	var NON_PIENO, NON_VUOTO: condition;
+	var K: integer; //numero messaggi presenti
+
+	entry procedure DEPOSITA(M:messaggio)
+		begin
+			while(K=N) do NON_PIENO.wait; end
+			BUFFER[D] <- M;
+			D <- (D+1) mod N;
+			K <- K + 1;
+			NON_VUOTO.signal;
+		end
+
+	entry procedure PRELEVA(ref M1:messaggio) 
+		begin
+			while(K=0) do NON_VUOTO.wait; end
+			M1 <- BUFFER[T];
+			T <- (T+1) mod N;
+			K <- K - 1;
+			NON_PIENO.signal;
+		end
+
+	begin 
+		K <- 0; T <- 0; D <- 0;
+	end
+end monitor

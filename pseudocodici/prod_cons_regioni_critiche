@@ -14,9 +14,9 @@ begin
 		region counter 
 			when counter < N
 				counter <- counter + 1;
+				BUFFER[D] <- M 
+				D <- (D+1) mod N;
 		end region
-		BUFFER[D] <- M 
-		D <- (D+1) mod N;
 	end	
 end 
 
@@ -27,8 +27,8 @@ begin
 		region counter 
 			when counter > 0 
 				counter <- counter - 1;
+				M <- BUFFER[T]
+				T <- (T+1) mod N;
 		end region
-		M <- BUFFER[T]
-		T <- (T+1) mod N;
 	end	
 end 

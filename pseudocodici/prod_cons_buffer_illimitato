@@ -1,0 +1,33 @@
+ESERCIZIO: risolvere il problema produttori / consumatori nel caso che sia disponibile un buffer di dimensioni illimitate. Ripetere l’esercizio di sopra con questa ipotesi semplificativa cercando una soluzione più semplice che utilizzi meno semafori.
+
+concurrent program PRODUTTORI_CONSUMATORI_ILLIMITATO;
+type messaggio = ...;
+var BUFFER: array[indice] of messaggio;
+var T,D: indice; //T indice utilizzato per le estrazione e D indice usato per gli inserimenti
+var USO_T, USO_D: semaforo_binario; //semafori binari in mutua esclusione su D e T
+
+concurrent procedure PRODi
+var M: messaggio
+loop
+	<<produci un messaggio in M>>
+	P(USO_D);
+		BUFFER[D] <- M;
+		D <- (D+1);
+	V(USO_D);
+end
+
+concurrent procedure CONSj
+var M: messaggio;
+loop 
+	P(USO_T);
+		M <- BUFFER[T]
+		T <- (T+1)
+	V(USO_T)
+	<<consuma il messaggio>>
+end
+
+begin INIZ_SEM(USO_D, 1); INIZ_SEM(USO_T,1); 
+	INIZ_SEM(PIENE, 0); INIZ_SEM(VUOTE,N);
+	T <- 0; D <- 0;
+	cobegin ...||PRODi||CONSj||... coend
+end

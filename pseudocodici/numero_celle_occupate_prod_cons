@@ -1,0 +1,31 @@
+ESERCIZIO: Scrivere una funzione che restituisce il numero di celle correntemente occupate nel buffer, nell'ipotesi che non sia disponibile una primitiva per interrogare il valore dei semafori a conteggio.
+
+concurrent procedure PRODi
+var M: messaggio;
+loop 
+	<produci un mess in M>
+	P(VUOTE)
+	P(USO_D)
+	BUFFER[DmodN] <- M;
+	D = D + 1;
+	V(USO_D);
+	V(PIENE);
+end
+
+concurrent procedure CONSj
+var M: messaggio;
+loop
+	P(PIENE);
+	P(USO_T);
+	M <- BUFFER[T mod N];
+	T <- T + 1;
+	V(VUOTE);
+	<consuma il messaggio>
+end
+
+procedure SIZE 
+	P(USO_D);
+	P(USO_T);
+	return D - T
+	V(USO_D);
+	V(USO_T);

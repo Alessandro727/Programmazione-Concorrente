@@ -1,0 +1,3 @@
+ESERCIZIO:  in molti casi pratici risulta utile utilizzare una variante del produttori / consumatori dove le operazioni di inserimento e prelievo risultino non-bloccanti, ovvero dove l'operazione di inserimento su un buffer pieno e di prelievo da un buffer vuoto restituisce immediatamente un errore, anziché causare la sospensione del f.d.e. invocante. Ragionare se e come sia possibile impostare una soluzione a questo problema utilizzando i soli semafori di Dijkstra.
+
+/* da implementare */ 

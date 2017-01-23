@@ -1,0 +1,34 @@
+PRODUTTORI/CONSUMATORI CON REGIONI CRITICHE CONDIZIONALI
+
+concurrent program PRODUTTORI_CONSUMATORI;
+N = ...
+var BUFFER: shared array[0..N] of messaggio;
+counter: intero; 
+counter <- 0;
+var T,D: indice; //T indice utilizzato per le estrazione e D indice usato per gli inserimenti
+
+concurrent procedure PRODi;
+begin 
+	loop
+		var M: messaggio;
+		region counter 
+			when counter < N
+				counter <- counter + 1;
+		end region
+		BUFFER[D] <- M 
+		D <- (D+1) mod N;
+	end	
+end 
+
+concurrent procedure CONSj;
+begin 
+	loop
+		var M: messaggio;
+		region counter 
+			when counter > 0 
+				counter <- counter - 1;
+		end region
+		M <- BUFFER[T]
+		T <- (T+1) mod N;
+	end	
+end 

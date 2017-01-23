@@ -1,0 +1,30 @@
+CINQUE FILOSOFI MANGIATORI CON REGIONI CRITICHE
+
+/* Bisogna escludere una situazione di stallo che può verificarsi, ovvero tutti hanno la forchetta destra o sinistra, quindi dobbiamo impossessarci delle due forchette insieme e rilasciando insieme le due forchette */
+
+concurrent program CINQUE_FILOSOFI_MANGIATORI;
+
+type filosofo = concurrent procedure(I:0..4);
+begin loop
+	 <<pensa>>;
+	 region LIBERA
+	 	when LIBERA[I] and LIBERA[(I+1) mod 5] do 
+	 		LIBERA[I] <- false;
+	 		LIBERA[(I+1) mod 5] <- false;
+	 end region
+	 <<mangia>>;
+	 region LIBERA
+	 	LIBERA[I] <- true;
+	 	LIBERA[I+1] <- true;
+	 end region
+	end 
+end
+
+var A,B,C,D,E: filosofo;
+var J:0..4;
+var LIBERA: shared array[0..4] of boolean; //variabile condivisa con la quale sono modellate le forchette
+
+begin 
+	for J <- 0 to 4 do LIBERA[J] = true;
+	cobegin A(0) || B(1) || C(2) || D(3) || E(4) coend
+end

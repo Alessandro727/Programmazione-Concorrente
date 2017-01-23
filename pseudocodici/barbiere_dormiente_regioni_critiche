@@ -1,0 +1,32 @@
+BARBIERE DORMIENTE CON REGIONI CRITICHE CONDIZIONALI
+
+concurrent program BARBIERE_DORMIENTE
+type in_attesa: intero;
+type libera = shared int;
+var N = 5;
+var Dormiente: barbiere; var cliente = array[0...NUM_CLIENTI]:cliente
+
+type barbiere = concurrent procedure Dormiente;
+begin loop
+	region in_attesa
+		when in_attesa > 0
+			in_attesa <- in_attesa - 1;
+			libera = 1
+	end region
+	<<taglia>>
+end
+
+type cliente = concurrent procedure Cliente;
+begin 
+	<<raggiungi il negozio>>
+	region in_attesa
+		when in_attesa < N do 
+			in_attesa <- in_attesa + 1;
+	end region
+	<<entra nel negozio>>
+	region libera 
+		when libera == 1 do
+			libera = 0
+	end region
+	<<siediti>>
+end

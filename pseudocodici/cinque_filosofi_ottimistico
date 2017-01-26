@@ -2,45 +2,30 @@ ESERCIZIO CINQUE FILOSOFI MANGIATORI APPROCCIO OTTIMISTICO
 /* Se un filosofo trova la seconda forchetta già impegnata, allora rilascia anche la prima ed attende prima di riprovare, non compromette il livello di
 * parallelismo ed evita lo stallo invalidando la non-prerilasciabilità. NON GODE DELLA PROPRIETA DI FAIRNESS */
 /* Soluzione con l'utilizzo dei semafori di Dijkstra */
+/* Suppongo che l'implementazione della P sia non bloccante, ovvero se è bloccato ritorna errore */
 
 concurrent program CINQUE_FILOSOFI_MANGIATORI_OTTIMISTICO;
 type filosofo = concurrent procedure (I: 0..4);
 	begin 
 		<<pensa>>
 		loop
-			P(KX)
-			K[i] = false
-			V(KX)
-			P(F[i]) //P della forchetta destra e ho messo già a false il boolean associato
-			P(KX)
-			if(K[(i+1)mod5] == true) //è libera anche la sinistra
-				K[(i+1)mod5] = false
-				P(F[(i+1)mod5]) //prendo la forchetta sinistra
-				V(KX)
-				<<esci dal ciclo>>
-			else 
-				K[i] = true
-				V(F[i])
-				V(KX)
+			if(P(F[i]) != error)
+				if(P(F[(i+1)mod5]) != error)
+					<<esci dal ciclo>>
+				else
+					V(F[i])
 		end 
 		<<mangia>>
 		V(F[(i+1)mod5]) //rilascio la sinistra
 		V(F[i]) //rilascio la destra
-		P(KX)
-		K[i] = true
-		K[(i+1)mod5] = true
-		V(KX)
 	end
 
 
 var F:shared array[0..4] of semaforo; //variabile condivisa per modellare le forchette
-var K:shared array [0..4] of boolean; //variabile condivisa che rappresenta se la forchetta è libera(True) o meno(False)
-var KX: semaforo //semaforo associato alla variabile condivisa K
 var A,B,C,D,E: filosofo;
 
 begin 
 	for J <- 0 to 4 do INIZ_SEM(F[J], 1);
-	for I <- 0 to 4 do K[I] = true;
 	INIZ_SEM(KX, 1);
 	cobegin A(0) || B(1) || C(2) || D(3) || E(4) coend
 end

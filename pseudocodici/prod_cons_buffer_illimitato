@@ -14,11 +14,13 @@ loop
 		BUFFER[D] <- M;
 		D <- (D+1);
 	V(USO_D);
+	V(PIENE);
 end
 
 concurrent procedure CONSj
 var M: messaggio;
 loop 
+	P(PIENE);
 	P(USO_T);
 		M <- BUFFER[T]
 		T <- (T+1)

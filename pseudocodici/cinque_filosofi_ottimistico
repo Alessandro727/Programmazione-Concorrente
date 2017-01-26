@@ -26,6 +26,5 @@ var A,B,C,D,E: filosofo;
 
 begin 
 	for J <- 0 to 4 do INIZ_SEM(F[J], 1);
-	INIZ_SEM(KX, 1);
 	cobegin A(0) || B(1) || C(2) || D(3) || E(4) coend
 end

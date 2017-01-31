@@ -1,19 +1,23 @@
 ESERCIZIO: Risolvere il problema dei 5 filosofi usando i monitor con le seguenti operazioni PRENDI(i), RILASCIA_DESTRA(i), RILASCIA_SINISTRA(i)
 
 type filosofo() = monitor
-	var F:shared array [0..4] of condition; //le coppie forchette
+	var F:shared array [0..4] of condition; //forchette
 	var B: shared array[0..4] of boolean; //booleano che mi dice se la forchetta è presa o meno
 
 	entry procedure PRENDI(i)
 		begin 
 			while(B[i]) do F[i].wait; end
 			B[i] <- true;
+			while(B[(i+1)mod5]) do F[(i+1)mod5].wait; end
+			B[(i+1)mod5]<- true;
 		end 
 
 	entry procedure RILASCIA(i)
 		begin 
 			B[i] <- false;
 			F[i].signal;
+			B[(i+1)mod5] <- false;
+			F[(i+1)mod5].signal;
 		end
 
 	begin

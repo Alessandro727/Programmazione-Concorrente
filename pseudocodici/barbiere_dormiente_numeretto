@@ -25,21 +25,18 @@ begin
 		in_attesa <- in_attesa + 1;
 		P(NX);
 		numeretto <- numeretto + 1; //prendo il numeretto
+		numeretto_mio <- numeretto;
 		V(NX);
+		V(MX);
 		loop
-			P(NX);
 			P(TX);
-			if(numeretto == turno)
-				V(MX);
+			if(numeretto_mio == turno)
 				V(C);
-				V(NX);
 				V(TX);
 				P(B); //aspetta che il barbiere finisce
 				<<siediti>>
 				<<esci dal loop>>
 			else //non è il tuo turno
-				V(MX);
-				V(NX);
 				V(TX);
 		end
 	else V(MX);

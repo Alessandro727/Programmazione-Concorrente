@@ -15,6 +15,7 @@ type semaforo = monitor
 		S <- S + 1;
 		S_POSITIVO.signal;
 	end
+	
 	begin 
 		S <- 0;
 	end
